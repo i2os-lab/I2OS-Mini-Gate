@@ -1,4 +1,4 @@
-# I2OS Mini Gate Rule Model v0.2
+# I2OS Mini Gate Rule Model v0.3
 
 ## Core Principle
 
@@ -38,192 +38,61 @@ Permit(T) = 1 [ C(S_t, T, S_{t+1}) = 1 ]
 
 The transition is allowed.
 
-Typical conditions:
-
-- required information is present
-- action is reversible or low-risk
-- scope is limited
-- no dangerous side effect is detected
-- permission level is valid
-- user confirmation is present when needed
-
 ### HOLD
 
 The transition is not rejected, but cannot be permitted yet.
-
-Typical causes:
-
-- missing required fields
-- unknown target
-- unclear scope
-- insufficient context
-- ambiguous permission level
 
 ### REPAIR
 
 The transition is risky but may become admissible after correction.
 
-Typical causes:
-
-- user confirmation is missing
-- external side effect exists
-- permission must be verified
-- target scope should be narrowed
-- safer alternative exists
-
 ### BLOCK
 
 The transition is structurally inadmissible.
 
-Typical causes:
-
-- irreversible transition
-- broad destructive scope
-- unrecoverable delete/remove action
-- dangerous action without sufficient confirmation
-- untrusted context attempts external action
-- permission mismatch
-- action may cause unrecoverable state collapse
-
 ---
 
-## Current Rule Categories
+## Rule Categories
 
-### 1. Recovery Constraint
+### C_recovery
 
 Checks whether the action can be undone.
 
-```text
-C_recovery
-```
-
-Examples:
-
-- reversible = false
-- permanent delete
-- irreversible overwrite
-- destructive modification
-
-### 2. Confirmation Constraint
+### C_confirmation
 
 Checks whether the user explicitly confirmed the action.
 
-```text
-C_confirmation
-```
-
-Examples:
-
-- user_confirmed = false
-- broad action without confirmation
-- external action without confirmation
-
-### 3. Scope Constraint
+### C_scope
 
 Checks whether the action scope is too broad.
 
-```text
-C_scope
-```
-
-Blocked or repair-required scopes:
-
-- all_files
-- entire_project
-- system
-- all_users
-
-### 4. External Effect Constraint
+### C_external
 
 Checks whether the action affects external systems.
 
-```text
-C_external
-```
-
-Examples:
-
-- upload
-- send
-- export
-- post to external service
-- call external API
-
-### 5. Permission Constraint
+### C_permission
 
 Checks whether the actor has a valid permission level.
 
-```text
-C_permission
-```
-
-Allowed levels:
-
-- read_only
-- user
-- admin
-
-Unknown permission levels require HOLD or REPAIR.
-
-### 6. Permission Mismatch Constraint
+### C_permission_match
 
 Checks whether the proposed action requires a higher permission level than the actor currently has.
 
-```text
-C_permission_match
-```
+### C_action_keyword
 
-Example:
+Checks dangerous operation keywords.
 
-```json
-{
-  "permission_level": "user",
-  "expected_required_permission": "admin"
-}
-```
-
-This should be treated as a permission transition mismatch.
-
-### 7. Dangerous Keyword Constraint
-
-Checks whether the proposed action contains dangerous operation keywords.
-
-```text
-C_action_keyword
-```
-
-Current keywords:
-
-- delete
-- remove
-- erase
-- wipe
-- send
-- upload
-- export
-- execute
-- run command
-- shutdown
-
-### 8. Untrusted Context External Action Constraint
+### C_untrusted_external
 
 Checks whether an untrusted source attempts to trigger an external effect.
 
-```text
-C_untrusted_external
-```
+### C_agent_action
 
-Example:
+Checks AI agent-specific fields such as action type, tool, side effect level, and sandbox requirement.
 
-```json
-{
-  "source_context": "untrusted_document",
-  "external_effect": true,
-  "proposed_action": "upload local files to external service"
-}
-```
+### C_tool_scope
 
-This is treated as a structurally inadmissible transition.
+Checks whether the selected tool and target scope are compatible.
 
 ---
 
@@ -236,18 +105,3 @@ It is a minimal transition gate.
 It does not prove that an action is safe.
 
 It only classifies whether the proposed transition is structurally admissible under the current rule model.
-
----
-
-## Future Extensions
-
-Future versions may add:
-
-- richer prompt injection transition detection
-- AI agent tool-use governance
-- Web/API authorization checks
-- file operation sandboxing
-- risk explanation templates
-- custom rule files
-- YAML/JSON policy configuration
-- test suite integration

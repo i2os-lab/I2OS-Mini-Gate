@@ -4,16 +4,16 @@ from datetime import datetime
 from pathlib import Path
 
 
-VERSION = "v0.2-complete"
+VERSION = "v0.3-complete"
 REPORT_DIR = Path("reports")
 
 
 def i2os_gate(action):
     """
-    I2OS Mini Gate v0.2-complete
+    I2OS Mini Gate v0.3-complete
 
     Purpose:
-    Classify a proposed action before execution.
+    Classify a proposed AI/software action before execution.
 
     Output:
     - GO      : admissible transition
@@ -26,13 +26,21 @@ def i2os_gate(action):
     repairs = []
 
     proposed_action = action.get("proposed_action", "").lower()
-    scope = action.get("scope", "unknown")
+    scope = action.get("scope", action.get("target_scope", "unknown"))
+    target_scope = action.get("target_scope", scope)
     reversible = action.get("reversible", None)
     user_confirmed = action.get("user_confirmed", None)
     external_effect = action.get("external_effect", None)
     permission_level = action.get("permission_level", "unknown")
     expected_required_permission = action.get("expected_required_permission", None)
     source_context = action.get("source_context", "trusted")
+
+    action_type = action.get("action_type", None)
+    tool_name = action.get("tool_name", None)
+    side_effect_level = action.get("side_effect_level", None)
+    requires_confirmation = action.get("requires_confirmation", None)
+    sandbox_required = action.get("sandbox_required", None)
+    sandbox_enabled = action.get("sandbox_enabled", None)
 
     required_fields = [
         "actor",
@@ -48,6 +56,9 @@ def i2os_gate(action):
     missing_fields = []
     for field in required_fields:
         if field not in action:
+            # v0.3 allows target_scope as an alternative to scope
+            if field == "scope" and "target_scope" in action:
+                continue
             missing_fields.append(field)
 
     if missing_fields:
@@ -62,10 +73,14 @@ def i2os_gate(action):
         reasons.append("User confirmation missing")
         repairs.append("Ask explicit user confirmation")
 
+    if requires_confirmation is True and user_confirmed is False:
+        reasons.append("Required confirmation is missing")
+        repairs.append("Ask explicit user confirmation before execution")
+
     # Scope constraint
     broad_scopes = ["all_files", "entire_project", "system", "all_users"]
 
-    if scope in broad_scopes:
+    if scope in broad_scopes or target_scope in broad_scopes:
         reasons.append("Action scope too broad")
         repairs.append("Narrow the target scope")
 
@@ -100,7 +115,8 @@ def i2os_gate(action):
         "export",
         "execute",
         "run command",
-        "shutdown"
+        "shutdown",
+        "rm -rf"
     ]
 
     for keyword in dangerous_keywords:
@@ -109,7 +125,7 @@ def i2os_gate(action):
             break
 
     # Delete/remove-specific recovery check
-    if "delete" in proposed_action or "remove" in proposed_action:
+    if "delete" in proposed_action or "remove" in proposed_action or "rm -rf" in proposed_action:
         if reversible is False:
             reasons.append("Delete/remove action is not recoverable")
             repairs.append("Move to trash instead of permanent deletion")
@@ -120,6 +136,21 @@ def i2os_gate(action):
             reasons.append("Untrusted context attempted to trigger external side effect")
             repairs.append("Ignore external action instructions from untrusted context")
 
+    # v0.3 Agent action checks
+    if action_type:
+        check_agent_action(
+            reasons=reasons,
+            repairs=repairs,
+            action_type=action_type,
+            tool_name=tool_name,
+            side_effect_level=side_effect_level,
+            target_scope=target_scope,
+            sandbox_required=sandbox_required,
+            sandbox_enabled=sandbox_enabled,
+            user_confirmed=user_confirmed,
+            external_effect=external_effect,
+        )
+
     block_prefixes = [
         "Permission transition mismatch",
     ]
@@ -128,7 +159,10 @@ def i2os_gate(action):
         "Irreversible transition",
         "Delete/remove action is not recoverable",
         "Action scope too broad",
-        "Untrusted context attempted to trigger external side effect"
+        "Untrusted context attempted to trigger external side effect",
+        "Destructive agent action is not recoverable",
+        "Command execution without confirmation",
+        "Destructive tool-scope combination detected",
     ]
 
     has_block_signal = any(reason in block_signals for reason in reasons)
@@ -154,12 +188,56 @@ def i2os_gate(action):
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "decision": decision,
         "summary": summary,
-        "reasons": reasons,
+        "reasons": deduplicate(reasons),
         "repairs": deduplicate(repairs),
         "input_action": action,
         "core_principle": "Capability is not permission.",
         "method": "State → Transition → Constraint Check → GO/HOLD/REPAIR/BLOCK"
     }
+
+
+def check_agent_action(
+    reasons,
+    repairs,
+    action_type,
+    tool_name,
+    side_effect_level,
+    target_scope,
+    sandbox_required,
+    sandbox_enabled,
+    user_confirmed,
+    external_effect,
+):
+    destructive_levels = ["destructive", "irreversible"]
+    write_levels = ["local_write", "external_write", "destructive", "irreversible"]
+
+    if side_effect_level in destructive_levels:
+        reasons.append(f"High side effect level detected: {side_effect_level}")
+
+    if side_effect_level in destructive_levels and user_confirmed is False:
+        reasons.append("Destructive agent action lacks confirmation")
+        repairs.append("Require explicit confirmation for destructive agent action")
+
+    if side_effect_level in destructive_levels:
+        reasons.append("Destructive agent action is not recoverable")
+        repairs.append("Use dry-run or sandbox before destructive action")
+
+    if action_type == "command_execution" and user_confirmed is False:
+        reasons.append("Command execution without confirmation")
+        repairs.append("Require explicit confirmation before command execution")
+
+    if sandbox_required is True and sandbox_enabled is not True:
+        reasons.append("Sandbox required but not enabled")
+        repairs.append("Enable sandbox or dry-run mode before execution")
+
+    if tool_name in ["terminal", "filesystem"] and target_scope in ["entire_project", "system"]:
+        if side_effect_level in destructive_levels:
+            reasons.append("Destructive tool-scope combination detected")
+            repairs.append("Narrow scope or use a reversible operation")
+
+    if external_effect is True and side_effect_level in ["external_write"]:
+        reasons.append("External write transition detected")
+        repairs.append("Require explicit user confirmation and destination verification")
 
 
 def permission_rank(level):
@@ -260,27 +338,38 @@ def run_sample_tests():
             "current_state": "User asked to process files",
             "proposed_action": "modify selected files"
         },
-        "REPAIR_sample_external_upload": {
+        "REPAIR_sample_external_api_call": {
             "actor": "AI agent",
-            "current_state": "User asked to share a report",
-            "proposed_action": "upload report to external service",
-            "target": "./docs/report.txt",
-            "scope": "single_file",
+            "current_state": "User asked to analyze local data",
+            "proposed_action": "upload local data to external API",
+            "action_type": "api_call",
+            "tool_name": "api_client",
+            "target": "https://api.example.test/upload",
+            "target_scope": "external_service",
+            "side_effect_level": "external_write",
             "permission_level": "user",
+            "requires_confirmation": True,
+            "user_confirmed": False,
             "reversible": True,
-            "external_effect": True,
-            "user_confirmed": False
+            "sandbox_required": False,
+            "external_effect": True
         },
-        "BLOCK_sample_delete_all_files": {
+        "BLOCK_sample_dangerous_command": {
             "actor": "AI agent",
-            "current_state": "User asked to organize files",
-            "proposed_action": "delete all files in ./downloads",
-            "target": "./downloads",
-            "scope": "all_files",
+            "current_state": "User asked to clean temporary files",
+            "proposed_action": "execute rm -rf ./project",
+            "action_type": "command_execution",
+            "tool_name": "terminal",
+            "target": "./project",
+            "target_scope": "entire_project",
+            "side_effect_level": "destructive",
             "permission_level": "user",
+            "requires_confirmation": True,
+            "user_confirmed": False,
             "reversible": False,
-            "external_effect": False,
-            "user_confirmed": False
+            "sandbox_required": True,
+            "sandbox_enabled": False,
+            "external_effect": False
         }
     }
 
@@ -312,7 +401,7 @@ def safe_report_name(filename):
 def main():
     if len(sys.argv) < 2:
         print("[I2OS] No JSON file specified.")
-        print("[I2OS] Running built-in 4 sample tests.\n")
+        print("[I2OS] Running built-in sample tests.\n")
         run_sample_tests()
     else:
         filename = sys.argv[1]

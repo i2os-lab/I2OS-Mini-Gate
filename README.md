@@ -55,19 +55,21 @@ A transition is permitted only when the movement from the current state to the n
 
 ---
 
-## What This Prototype Detects
+## v0.3 Focus
 
-This prototype checks simple but important transition risks:
+**v0.3-complete** extends I2OS Mini Gate into an early **AI Agent Action Checker**.
 
-- irreversible actions
-- missing user confirmation
-- overly broad action scope
-- external side effects
-- unknown permission level
-- dangerous action keywords
-- unrecoverable delete/remove operations
-- permission mismatch indicators
-- untrusted-context external actions
+It now checks agent-specific fields such as:
+
+- `action_type`
+- `tool_name`
+- `side_effect_level`
+- `target_scope`
+- `requires_confirmation`
+- `sandbox_required`
+- `sandbox_enabled`
+
+This makes the gate closer to an AI agent runtime governance prototype.
 
 ---
 
@@ -82,7 +84,9 @@ python i2os_gate.py
 Run a specific example:
 
 ```bash
-python i2os_gate.py examples/ai_agent_file_delete.json
+python i2os_gate.py examples/agent_safe_summary.json
+python i2os_gate.py examples/agent_dangerous_command.json
+python i2os_gate.py examples/agent_external_api_call.json
 python i2os_gate.py examples/prompt_injection_upload.json
 python i2os_gate.py examples/api_auth_bypass.json
 ```
@@ -96,166 +100,39 @@ reports/*.md
 
 ---
 
-## Additional Examples
-
-The `examples/` directory contains transition cases.
+## Examples
 
 ```text
 examples/
+├── safe_summary.json
 ├── ai_agent_file_delete.json
 ├── prompt_injection_upload.json
 ├── api_auth_bypass.json
-└── safe_summary.json
+├── agent_safe_summary.json
+├── agent_dangerous_command.json
+└── agent_external_api_call.json
 ```
 
-### AI Agent File Delete
+Expected decisions:
 
-A proposed file deletion action over an entire project.
-
-Expected decision:
-
-```text
-BLOCK
-```
-
-### Prompt Injection Upload
-
-An untrusted document attempts to trigger an external upload.
-
-Expected decision:
-
-```text
-BLOCK
-```
-
-### API Authorization Bypass
-
-A normal user attempts to access an admin-level export transition.
-
-Expected decision:
-
-```text
-BLOCK
-```
-
-### Safe Summary
-
-A read-only local summarization action.
-
-Expected decision:
-
-```text
-GO
-```
+| Example | Expected |
+|---|---|
+| safe_summary.json | GO |
+| ai_agent_file_delete.json | BLOCK |
+| prompt_injection_upload.json | BLOCK |
+| api_auth_bypass.json | BLOCK |
+| agent_safe_summary.json | GO |
+| agent_dangerous_command.json | BLOCK |
+| agent_external_api_call.json | REPAIR |
 
 ---
 
-## Rule Model
-
-See:
+## Documentation
 
 ```text
 docs/rule_model.md
-```
-
----
-
----
-
-## v0.3 Design: AI Agent Action Checker
-
-The next design step is documented here:
-
-```text
 docs/agent_action_checker.md
 ```
-
-v0.3 extends I2OS Mini Gate toward AI agent runtime governance by adding agent-specific action fields:
-
-- `action_type`
-- `tool_name`
-- `side_effect_level`
-- `target_scope`
-- `requires_confirmation`
-- `sandbox_required`
-
-Additional v0.3 design examples:
-
-```text
-examples/agent_safe_summary.json
-examples/agent_dangerous_command.json
-examples/agent_external_api_call.json
-```
-
-## Roadmap
-
-### v0.1.4 - Mini Gate Prototype
-
-Implemented:
-
-- GO / HOLD / REPAIR / BLOCK classification
-- built-in sample tests
-- JSON report generation
-- Markdown report generation
-- basic transition risk detection
-
-### v0.2 - Rule-Based Runtime Admissibility Gate
-
-Implemented in this complete package:
-
-- documented rule model
-- examples directory
-- additional transition examples
-- prompt injection / untrusted context rule
-- permission mismatch rule
-- reports directory
-
-### v0.3 - AI Agent Action Checker
-
-Planned direction:
-
-- classify AI agent file operations, command execution, uploads, and external API calls
-- add structured tool-use transition fields
-
-### v0.4 - Prompt Injection Transition Detector
-
-Planned direction:
-
-- detect external instructions attempting to change tool permissions
-- identify untrusted context attempting to trigger external side effects
-
-### v0.5 - Web/API Authorization Transition Checker
-
-Planned direction:
-
-- inspect proposed API transitions
-- detect permission mismatch
-- detect user-to-admin transition anomalies
-
-### v1.0 - Runtime Admissibility Scanner
-
-Long-term target:
-
-- AI agent runtime security
-- LLM tool-use governance
-- prompt injection transition detection
-- irreversible action prevention
-- Web/API authorization transition checks
-- structural bug hunting
-
----
-
-## Project Position
-
-This is a minimal prototype of:
-
-```text
-I2OS Runtime Admissibility Scanner
-```
-
-It is not a full security scanner.
-
-It is a small experimental gate for detecting inadmissible state transitions before execution.
 
 ---
 
@@ -282,17 +159,19 @@ The goal is not only to detect dangerous outputs, but to prevent structurally un
 Current version:
 
 ```text
-v0.2-complete
+v0.3-complete
 ```
 
 Implemented features:
 
-- four-way decision output
+- GO / HOLD / REPAIR / BLOCK output
 - JSON / Markdown report generation
 - documented rule model
-- additional example actions
+- AI agent action fields
 - basic prompt injection transition handling
 - basic authorization mismatch handling
+- basic sandbox requirement handling
+- basic destructive tool-use detection
 
 ---
 
