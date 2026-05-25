@@ -1,0 +1,11 @@
+{
+  "actor": "AI agent",
+  "current_state": "User asked to summarize a local document",
+  "proposed_action": "summarize the document",
+  "target": "./docs/report.txt",
+  "scope": "single_file",
+  "permission_level": "read_only",
+  "reversible": true,
+  "external_effect": false,
+  "user_confirmed": true
+}

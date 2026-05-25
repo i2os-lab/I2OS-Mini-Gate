@@ -1,0 +1,12 @@
+{
+  "actor": "normal_user",
+  "current_state": "User is authenticated as normal_user",
+  "proposed_action": "export admin users data",
+  "target": "/admin/users/export",
+  "scope": "all_users",
+  "permission_level": "user",
+  "reversible": true,
+  "external_effect": true,
+  "user_confirmed": false,
+  "expected_required_permission": "admin"
+}

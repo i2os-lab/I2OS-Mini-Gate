@@ -1,0 +1,102 @@
+{
+  "GO_sample_safe_summary": {
+    "version": "v0.2-complete",
+    "timestamp": "2026-05-25T13:44:12",
+    "decision": "GO",
+    "summary": "This transition is allowed because no inadmissible conditions were detected.",
+    "reasons": [],
+    "repairs": [],
+    "input_action": {
+      "actor": "AI agent",
+      "current_state": "User asked to summarize a local document",
+      "proposed_action": "summarize the document",
+      "target": "./docs/report.txt",
+      "scope": "single_file",
+      "permission_level": "read_only",
+      "reversible": true,
+      "external_effect": false,
+      "user_confirmed": true
+    },
+    "core_principle": "Capability is not permission.",
+    "method": "State → Transition → Constraint Check → GO/HOLD/REPAIR/BLOCK"
+  },
+  "HOLD_sample_missing_info": {
+    "version": "v0.2-complete",
+    "timestamp": "2026-05-25T13:44:12",
+    "decision": "HOLD",
+    "summary": "This transition is held because required information is missing or insufficient.",
+    "reasons": [
+      "Missing required fields: scope, permission_level, reversible, external_effect, user_confirmed",
+      "Unknown permission level"
+    ],
+    "repairs": [
+      "Verify actor permission level"
+    ],
+    "input_action": {
+      "actor": "AI agent",
+      "current_state": "User asked to process files",
+      "proposed_action": "modify selected files"
+    },
+    "core_principle": "Capability is not permission.",
+    "method": "State → Transition → Constraint Check → GO/HOLD/REPAIR/BLOCK"
+  },
+  "REPAIR_sample_external_upload": {
+    "version": "v0.2-complete",
+    "timestamp": "2026-05-25T13:44:12",
+    "decision": "REPAIR",
+    "summary": "This transition may become admissible after the suggested repairs are applied.",
+    "reasons": [
+      "User confirmation missing",
+      "External side effect detected",
+      "Dangerous action keyword detected: upload"
+    ],
+    "repairs": [
+      "Ask explicit user confirmation",
+      "Require additional confirmation before external action"
+    ],
+    "input_action": {
+      "actor": "AI agent",
+      "current_state": "User asked to share a report",
+      "proposed_action": "upload report to external service",
+      "target": "./docs/report.txt",
+      "scope": "single_file",
+      "permission_level": "user",
+      "reversible": true,
+      "external_effect": true,
+      "user_confirmed": false
+    },
+    "core_principle": "Capability is not permission.",
+    "method": "State → Transition → Constraint Check → GO/HOLD/REPAIR/BLOCK"
+  },
+  "BLOCK_sample_delete_all_files": {
+    "version": "v0.2-complete",
+    "timestamp": "2026-05-25T13:44:12",
+    "decision": "BLOCK",
+    "summary": "This transition is blocked because it contains structurally inadmissible conditions.",
+    "reasons": [
+      "Irreversible transition",
+      "User confirmation missing",
+      "Action scope too broad",
+      "Dangerous action keyword detected: delete",
+      "Delete/remove action is not recoverable"
+    ],
+    "repairs": [
+      "Ask explicit user confirmation",
+      "Narrow the target scope",
+      "Move to trash instead of permanent deletion"
+    ],
+    "input_action": {
+      "actor": "AI agent",
+      "current_state": "User asked to organize files",
+      "proposed_action": "delete all files in ./downloads",
+      "target": "./downloads",
+      "scope": "all_files",
+      "permission_level": "user",
+      "reversible": false,
+      "external_effect": false,
+      "user_confirmed": false
+    },
+    "core_principle": "Capability is not permission.",
+    "method": "State → Transition → Constraint Check → GO/HOLD/REPAIR/BLOCK"
+  }
+}
