@@ -160,6 +160,33 @@ docs/rule_model.md
 
 ---
 
+---
+
+## v0.3 Design: AI Agent Action Checker
+
+The next design step is documented here:
+
+```text
+docs/agent_action_checker.md
+```
+
+v0.3 extends I2OS Mini Gate toward AI agent runtime governance by adding agent-specific action fields:
+
+- `action_type`
+- `tool_name`
+- `side_effect_level`
+- `target_scope`
+- `requires_confirmation`
+- `sandbox_required`
+
+Additional v0.3 design examples:
+
+```text
+examples/agent_safe_summary.json
+examples/agent_dangerous_command.json
+examples/agent_external_api_call.json
+```
+
 ## Roadmap
 
 ### v0.1.4 - Mini Gate Prototype

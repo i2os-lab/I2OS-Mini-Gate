@@ -1,0 +1,16 @@
+{
+  "actor": "AI agent",
+  "current_state": "User asked to analyze local data",
+  "proposed_action": "upload local data to external API",
+  "action_type": "api_call",
+  "tool_name": "api_client",
+  "target": "https://api.example.test/upload",
+  "target_scope": "external_service",
+  "side_effect_level": "external_write",
+  "permission_level": "user",
+  "requires_confirmation": true,
+  "user_confirmed": false,
+  "reversible": true,
+  "sandbox_required": false,
+  "external_effect": true
+}
