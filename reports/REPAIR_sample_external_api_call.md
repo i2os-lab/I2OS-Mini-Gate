@@ -2,7 +2,7 @@
 
 ## Version
 
-`v0.3-complete`
+`v0.4-complete`
 
 ## Decision
 
@@ -54,4 +54,4 @@ This transition may become admissible after the suggested repairs are applied.
 
 ## Timestamp
 
-`2026-05-25T14:40:57`
+`2026-05-25T14:52:54`

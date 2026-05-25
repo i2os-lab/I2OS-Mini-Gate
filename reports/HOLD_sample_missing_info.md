@@ -2,7 +2,7 @@
 
 ## Version
 
-`v0.3-complete`
+`v0.4-complete`
 
 ## Decision
 
@@ -14,7 +14,7 @@ This transition is held because required information is missing or insufficient.
 
 ## Reasons
 
-- Missing required fields: scope, permission_level, reversible, external_effect, user_confirmed
+- Missing required fields: permission_level, reversible, external_effect, user_confirmed, scope or target_scope
 - Unknown permission level
 
 ## Repairs
@@ -37,4 +37,4 @@ This transition is held because required information is missing or insufficient.
 
 ## Timestamp
 
-`2026-05-25T14:40:57`
+`2026-05-25T14:52:54`

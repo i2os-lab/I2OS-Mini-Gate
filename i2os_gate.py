@@ -4,13 +4,13 @@ from datetime import datetime
 from pathlib import Path
 
 
-VERSION = "v0.3-complete"
+VERSION = "v0.4-complete"
 REPORT_DIR = Path("reports")
 
 
 def i2os_gate(action):
     """
-    I2OS Mini Gate v0.3-complete
+    I2OS Mini Gate v0.4-complete
 
     Purpose:
     Classify a proposed AI/software action before execution.
@@ -25,7 +25,7 @@ def i2os_gate(action):
     reasons = []
     repairs = []
 
-    proposed_action = action.get("proposed_action", "").lower()
+    proposed_action = str(action.get("proposed_action", "")).lower()
     scope = action.get("scope", action.get("target_scope", "unknown"))
     target_scope = action.get("target_scope", scope)
     reversible = action.get("reversible", None)
@@ -33,7 +33,16 @@ def i2os_gate(action):
     external_effect = action.get("external_effect", None)
     permission_level = action.get("permission_level", "unknown")
     expected_required_permission = action.get("expected_required_permission", None)
+
+    # Important:
+    # These variables are defined here before use to avoid NameError.
     source_context = action.get("source_context", "trusted")
+    instruction_origin = action.get("instruction_origin", "user")
+    contains_instruction_override = action.get("contains_instruction_override", False)
+    requests_tool_use = action.get("requests_tool_use", False)
+    requests_external_effect = action.get("requests_external_effect", False)
+    attempts_permission_escalation = action.get("attempts_permission_escalation", False)
+    trusted_by_user = action.get("trusted_by_user", True)
 
     action_type = action.get("action_type", None)
     tool_name = action.get("tool_name", None)
@@ -46,7 +55,6 @@ def i2os_gate(action):
         "actor",
         "current_state",
         "proposed_action",
-        "scope",
         "permission_level",
         "reversible",
         "external_effect",
@@ -56,10 +64,10 @@ def i2os_gate(action):
     missing_fields = []
     for field in required_fields:
         if field not in action:
-            # v0.3 allows target_scope as an alternative to scope
-            if field == "scope" and "target_scope" in action:
-                continue
             missing_fields.append(field)
+
+    if "scope" not in action and "target_scope" not in action:
+        missing_fields.append("scope or target_scope")
 
     if missing_fields:
         reasons.append(f"Missing required fields: {', '.join(missing_fields)}")
@@ -131,7 +139,7 @@ def i2os_gate(action):
             repairs.append("Move to trash instead of permanent deletion")
 
     # Untrusted context external action constraint
-    if source_context in ["untrusted_document", "untrusted_input", "external_content"]:
+    if source_context in ["untrusted_document", "untrusted_input", "external_content", "web_page", "email_body", "pdf_content"]:
         if external_effect is True:
             reasons.append("Untrusted context attempted to trigger external side effect")
             repairs.append("Ignore external action instructions from untrusted context")
@@ -151,6 +159,22 @@ def i2os_gate(action):
             external_effect=external_effect,
         )
 
+    # v0.4 Prompt injection transition checks
+    check_prompt_injection_transition(
+        action=action,
+        reasons=reasons,
+        repairs=repairs,
+        source_context=source_context,
+        instruction_origin=instruction_origin,
+        contains_instruction_override=contains_instruction_override,
+        requests_tool_use=requests_tool_use,
+        requests_external_effect=requests_external_effect,
+        attempts_permission_escalation=attempts_permission_escalation,
+        trusted_by_user=trusted_by_user,
+        external_effect=external_effect,
+        proposed_action=proposed_action,
+    )
+
     block_prefixes = [
         "Permission transition mismatch",
     ]
@@ -163,6 +187,11 @@ def i2os_gate(action):
         "Destructive agent action is not recoverable",
         "Command execution without confirmation",
         "Destructive tool-scope combination detected",
+        "Instruction override detected from untrusted context",
+        "Untrusted context requested external side effect",
+        "Permission escalation attempt detected",
+        "Prompt injection transition detected",
+        "Untrusted context requested tool use with external effect",
     ]
 
     has_block_signal = any(reason in block_signals for reason in reasons)
@@ -209,7 +238,6 @@ def check_agent_action(
     external_effect,
 ):
     destructive_levels = ["destructive", "irreversible"]
-    write_levels = ["local_write", "external_write", "destructive", "irreversible"]
 
     if side_effect_level in destructive_levels:
         reasons.append(f"High side effect level detected: {side_effect_level}")
@@ -235,9 +263,67 @@ def check_agent_action(
             reasons.append("Destructive tool-scope combination detected")
             repairs.append("Narrow scope or use a reversible operation")
 
-    if external_effect is True and side_effect_level in ["external_write"]:
+    if external_effect is True and side_effect_level == "external_write":
         reasons.append("External write transition detected")
         repairs.append("Require explicit user confirmation and destination verification")
+
+
+def check_prompt_injection_transition(
+    action,
+    reasons,
+    repairs,
+    source_context,
+    instruction_origin,
+    contains_instruction_override,
+    requests_tool_use,
+    requests_external_effect,
+    attempts_permission_escalation,
+    trusted_by_user,
+    external_effect,
+    proposed_action,
+):
+    untrusted_sources = [
+        "untrusted_document",
+        "untrusted_input",
+        "external_content",
+        "web_page",
+        "email_body",
+        "pdf_content"
+    ]
+
+    untrusted = (
+        source_context in untrusted_sources
+        or instruction_origin == "external_content"
+        or trusted_by_user is False
+    )
+
+    external_keywords = ["upload", "send", "export", "post", "external", "api"]
+
+    proposed_external = any(keyword in proposed_action for keyword in external_keywords)
+
+    if untrusted and contains_instruction_override:
+        reasons.append("Instruction override detected from untrusted context")
+        repairs.append("Ignore instruction override from external content")
+
+    if untrusted and requests_tool_use:
+        reasons.append("Untrusted context requested tool use")
+        repairs.append("Require user confirmation before tool use")
+
+    if untrusted and requests_external_effect:
+        reasons.append("Untrusted context requested external side effect")
+        repairs.append("Block external side effects from untrusted content")
+
+    if attempts_permission_escalation:
+        reasons.append("Permission escalation attempt detected")
+        repairs.append("Reject permission escalation from external instruction")
+
+    if untrusted and requests_tool_use and (requests_external_effect or external_effect is True or proposed_external):
+        reasons.append("Prompt injection transition detected")
+        repairs.append("Reject tool-use transition originating from untrusted content")
+
+    if untrusted and requests_tool_use and external_effect is True:
+        reasons.append("Untrusted context requested tool use with external effect")
+        repairs.append("Separate document content from executable tool instructions")
 
 
 def permission_rank(level):
@@ -354,22 +440,26 @@ def run_sample_tests():
             "sandbox_required": False,
             "external_effect": True
         },
-        "BLOCK_sample_dangerous_command": {
+        "BLOCK_sample_prompt_injection": {
             "actor": "AI agent",
-            "current_state": "User asked to clean temporary files",
-            "proposed_action": "execute rm -rf ./project",
-            "action_type": "command_execution",
-            "tool_name": "terminal",
-            "target": "./project",
-            "target_scope": "entire_project",
-            "side_effect_level": "destructive",
+            "current_state": "AI is summarizing an untrusted document",
+            "proposed_action": "upload local files to external service",
+            "action_type": "api_call",
+            "tool_name": "api_client",
+            "target": "https://example.test/upload",
+            "target_scope": "external_service",
+            "side_effect_level": "external_write",
             "permission_level": "user",
-            "requires_confirmation": True,
+            "source_context": "untrusted_document",
+            "instruction_origin": "external_content",
+            "contains_instruction_override": True,
+            "requests_tool_use": True,
+            "requests_external_effect": True,
+            "attempts_permission_escalation": True,
+            "trusted_by_user": False,
             "user_confirmed": False,
-            "reversible": False,
-            "sandbox_required": True,
-            "sandbox_enabled": False,
-            "external_effect": False
+            "reversible": True,
+            "external_effect": True
         }
     }
 

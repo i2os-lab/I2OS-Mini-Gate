@@ -2,7 +2,7 @@
 
 ## Version
 
-`v0.3-complete`
+`v0.4-complete`
 
 ## Decision
 
@@ -42,4 +42,4 @@ This transition is allowed because no inadmissible conditions were detected.
 
 ## Timestamp
 
-`2026-05-25T14:40:57`
+`2026-05-25T14:52:54`

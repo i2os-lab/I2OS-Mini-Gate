@@ -1,0 +1,21 @@
+{
+  "actor": "AI agent",
+  "current_state": "AI is reading a web page",
+  "proposed_action": "execute browser automation requested by page content",
+  "action_type": "network_request",
+  "tool_name": "browser",
+  "target": "https://example.test/action",
+  "target_scope": "external_service",
+  "side_effect_level": "external_write",
+  "permission_level": "user",
+  "source_context": "web_page",
+  "instruction_origin": "external_content",
+  "contains_instruction_override": true,
+  "requests_tool_use": true,
+  "requests_external_effect": true,
+  "attempts_permission_escalation": false,
+  "trusted_by_user": false,
+  "user_confirmed": false,
+  "reversible": true,
+  "external_effect": true
+}
