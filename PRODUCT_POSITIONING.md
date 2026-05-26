@@ -8,6 +8,12 @@ I2OS Mini Gate
 
 Product-grade Runtime Shield Prototype
 
+## Relationship to I2OS
+
+I2OS Mini Gate is a public implementation layer derived from the broader I2OS research line, focusing specifically on Runtime Admissibility and Transition Governance.
+
+It does not expose the full internal structure of I2OS. Instead, it provides a minimal, inspectable runtime layer for checking proposed AI/software actions before execution.
+
 # I2OS Mini Gate
 
 Runtime Admissibility Scanner for AI Agent Actions
@@ -19,12 +25,6 @@ I2OS Mini Gate is a public implementation layer derived from the broader I2OS re
 I2OS Mini Gate は、I2OS全体構造のうち、Runtime Admissibility と Transition Governance に焦点を当てた公開実装層です。
 
 I2OS Mini Gate is a minimal runtime gate that checks proposed AI/software actions before execution.
-
-## Relationship to I2OS
-
-I2OS Mini Gate is a public implementation layer derived from the broader I2OS research line, focusing specifically on Runtime Admissibility and Transition Governance.
-
-It does not expose the full internal structure of I2OS. Instead, it provides a minimal, inspectable runtime layer for checking proposed AI/software actions before execution.
 
 ## Core Statement
 
