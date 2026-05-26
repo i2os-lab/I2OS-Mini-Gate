@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "i2os-mini-gate"
+version = "1.6.0"
+description = "Runtime Admissibility Scanner for AI agent actions"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+  {name = "Masayuki Ando / ANDOM"}
+]
+keywords = [
+  "AI safety",
+  "runtime governance",
+  "prompt injection",
+  "agent security",
+  "admissibility"
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Security",
+  "Topic :: Software Development :: Quality Assurance"
+]
+
+[project.scripts]
+i2os-scan = "i2os_mini_gate.cli:main"
+
+[tool.setuptools]
+py-modules = ["i2os_gate", "i2os_api"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["i2os_mini_gate*", "agent_bridge*", "local_tool*"]

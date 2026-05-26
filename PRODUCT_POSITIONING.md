@@ -1,0 +1,44 @@
+# Product Positioning
+
+## Name
+
+I2OS Mini Gate
+
+## v2.0 Position
+
+Product-grade Runtime Shield Prototype
+
+## Core Statement
+
+Capability is not permission.
+
+## One-line Description
+
+A pre-execution Runtime Shield that checks whether proposed AI/software actions are structurally admissible before they become real actions.
+
+## What It Is
+
+- Runtime admissibility scanner
+- AI agent action checker
+- prompt injection transition detector
+- local safety pre-check tool
+- explainable audit logger
+- configurable policy-based gate
+
+## What It Is Not
+
+- not a full antivirus
+- not a vulnerability scanner replacement
+- not a final enterprise product
+- not a guarantee of complete safety
+- not an execution engine
+
+## Core Value
+
+It separates capability from permission.
+
+The system asks:
+
+```text
+Should this transition be permitted before execution?
+```
