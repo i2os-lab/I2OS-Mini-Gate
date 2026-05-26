@@ -1,0 +1,21 @@
+{
+  "actor": "AI agent",
+  "current_state": "AI is processing user-provided text",
+  "proposed_action": "store external instruction as persistent memory",
+  "action_type": "memory_write",
+  "tool_name": "memory",
+  "target": "persistent_memory",
+  "target_scope": "system",
+  "side_effect_level": "local_write",
+  "permission_level": "user",
+  "source_context": "external_content",
+  "instruction_origin": "external_content",
+  "contains_instruction_override": true,
+  "requests_tool_use": true,
+  "requests_external_effect": false,
+  "attempts_permission_escalation": true,
+  "trusted_by_user": false,
+  "user_confirmed": false,
+  "reversible": false,
+  "external_effect": false
+}

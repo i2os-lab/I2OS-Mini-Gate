@@ -1,0 +1,21 @@
+{
+  "actor": "AI agent",
+  "current_state": "AI is summarizing an untrusted document",
+  "proposed_action": "summarize the document without executing instructions",
+  "action_type": "summary",
+  "tool_name": "filesystem",
+  "target": "./docs/untrusted_report.txt",
+  "target_scope": "single_file",
+  "side_effect_level": "read_only",
+  "permission_level": "read_only",
+  "source_context": "untrusted_document",
+  "instruction_origin": "external_content",
+  "contains_instruction_override": false,
+  "requests_tool_use": false,
+  "requests_external_effect": false,
+  "attempts_permission_escalation": false,
+  "trusted_by_user": false,
+  "user_confirmed": true,
+  "reversible": true,
+  "external_effect": false
+}
