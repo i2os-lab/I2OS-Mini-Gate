@@ -6,6 +6,10 @@
 
 > I2OS Mini Gate is a public implementation layer derived from the broader I2OS research line, focusing specifically on Runtime Admissibility and Transition Governance.
 
+I2OS Mini Gate は、I2OS全体構造のうち、Runtime Admissibility と Transition Governance に焦点を当てた公開実装層です。
+
+> I2OS Mini Gate is a public implementation layer derived from the broader I2OS research line, focusing specifically on Runtime Admissibility and Transition Governance.
+
 I2OS Mini Gate is a minimal runtime gate that checks proposed AI/software actions before execution.
 
 It classifies each proposed transition as:
@@ -106,6 +110,16 @@ python run_tests.py
 | v0.8 | CLI Runtime Scanner |
 | v0.9 | Mini Dashboard / HTML Report |
 | v1.0 | Runtime Admissibility Scanner |
+| v1.1 | Web/API Mode |
+| v1.2 | GitHub Action / CI Hook |
+| v1.3 | Agent Runtime Bridge |
+| v1.4 | Prompt Injection Lab |
+| v1.5 | Local Security Tool Prototype |
+| v1.6 | Packaging / Install Mode |
+| v1.7 | Policy Profiles |
+| v1.8 | Local Dashboard Launcher |
+| v1.9 | Hardening / Error Handling |
+| v2.0 | Product-grade Runtime Shield Prototype |
 
 ## Author
 
