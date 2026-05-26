@@ -365,6 +365,8 @@ from runtime_shield import RuntimeShield
 shield = RuntimeShield(policy_path="policy/strict_policy.json")
 result = shield.shield(action)
 ```
+Original concept and architecture by Masayuki Ando / ANDOM.
+I2OS Mini Gate is part of the I2OS research line: Runtime Admissibility, Transition Governance, and the principle “Capability is not permission.”
 
 See:
 
