@@ -1,0 +1,27 @@
+name: I2OS Mini Gate CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  i2os-mini-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run unit tests
+        run: |
+          python run_tests.py
+
+      - name: Run CI scan examples
+        run: |
+          python ci/i2os_ci_scan.py --policy policy/default_policy.json --fail-on BLOCK
