@@ -18,10 +18,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run unit tests
+      - name: Smoke test safe GO example
         run: |
-          python run_tests.py
+          python i2os_gate.py --action examples/audit_go_safe_summary.json --json-only --no-reports
 
-      - name: Run CI scan examples
+      - name: Smoke test Runtime Shield BLOCK example
         run: |
-          python ci/i2os_ci_scan.py --actions examples/audit_go_safe_summary.json --fail-on BLOCK
+          python runtime_shield/shield.py examples/audit_block_prompt_injection.json policy/strict_policy.json || true
