@@ -3,7 +3,7 @@
 **Runtime Admissibility Scanner for AI Agent Actions**
 
 > Capability is not permission.
->
+
 > I2OS Mini Gate is a public implementation layer derived from the broader I2OS research line, focusing specifically on Runtime Admissibility and Transition Governance.
 
 I2OS Mini Gate is a minimal runtime gate that checks proposed AI/software actions before execution.
