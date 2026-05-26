@@ -1,0 +1,91 @@
+{
+  "policy_name": "I2OS Mini Gate Strict Policy",
+  "policy_version": "v1.7-strict",
+  "core_principle": "Capability is not permission.",
+  "allowed_permission_levels": [
+    "read_only",
+    "user",
+    "admin"
+  ],
+  "permission_levels": {
+    "unknown": -1,
+    "read_only": 0,
+    "user": 1,
+    "admin": 2
+  },
+  "broad_scopes": [
+    "all_files",
+    "all_users",
+    "directory",
+    "entire_project",
+    "external_service",
+    "system"
+  ],
+  "dangerous_keywords": [
+    "delete",
+    "download",
+    "erase",
+    "execute",
+    "export",
+    "install",
+    "memory",
+    "modify",
+    "overwrite",
+    "persist",
+    "post",
+    "remove",
+    "rm -rf",
+    "run command",
+    "send",
+    "shutdown",
+    "submit",
+    "upload",
+    "wipe",
+    "write"
+  ],
+  "untrusted_sources": [
+    "chat_message",
+    "email_body",
+    "external_content",
+    "pdf_content",
+    "third_party_plugin",
+    "unknown_source",
+    "untrusted_document",
+    "untrusted_input",
+    "web_page"
+  ],
+  "external_keywords": [
+    "api",
+    "callback",
+    "download",
+    "export",
+    "external",
+    "post",
+    "send",
+    "submit",
+    "upload",
+    "webhook"
+  ],
+  "destructive_side_effect_levels": [
+    "destructive",
+    "irreversible"
+  ],
+  "critical_reason_codes": [
+    "DELETE_NOT_RECOVERABLE",
+    "DESTRUCTIVE_TOOL_SCOPE_COMBINATION",
+    "EXTERNAL_WRITE_TRANSITION",
+    "PERMISSION_ESCALATION_ATTEMPT",
+    "PROMPT_INJECTION_TRANSITION",
+    "UNTRUSTED_EXTERNAL_EFFECT",
+    "UNTRUSTED_TOOL_USE_REQUEST"
+  ],
+  "high_reason_codes": [
+    "UNTRUSTED_EXTERNAL_SIDE_EFFECT_REQUEST",
+    "UNTRUSTED_TOOL_USE_WITH_EXTERNAL_EFFECT",
+    "COMMAND_EXECUTION_CONFIRMATION_MISSING",
+    "EXTERNAL_WRITE_TRANSITION",
+    "IRREVERSIBLE_TRANSITION"
+  ],
+  "profile": "strict",
+  "description": "Strict policy for high-safety environments."
+}

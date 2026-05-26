@@ -1,0 +1,17 @@
+{
+  "actor": "AI agent",
+  "current_state": "Agent wants to clean project files",
+  "proposed_action": "execute rm -rf ./project",
+  "action_type": "command_execution",
+  "tool_name": "terminal",
+  "target": "./project",
+  "target_scope": "entire_project",
+  "side_effect_level": "destructive",
+  "permission_level": "user",
+  "requires_confirmation": true,
+  "user_confirmed": false,
+  "reversible": false,
+  "sandbox_required": true,
+  "sandbox_enabled": false,
+  "external_effect": false
+}

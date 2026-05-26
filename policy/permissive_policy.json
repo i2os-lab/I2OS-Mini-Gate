@@ -1,0 +1,67 @@
+{
+  "policy_name": "I2OS Mini Gate Permissive Policy",
+  "policy_version": "v1.7-permissive",
+  "core_principle": "Capability is not permission.",
+  "allowed_permission_levels": [
+    "read_only",
+    "user",
+    "admin"
+  ],
+  "permission_levels": {
+    "unknown": -1,
+    "read_only": 0,
+    "user": 1,
+    "admin": 2
+  },
+  "broad_scopes": [
+    "all_files",
+    "system",
+    "all_users"
+  ],
+  "dangerous_keywords": [
+    "delete",
+    "remove",
+    "erase",
+    "wipe",
+    "upload",
+    "export",
+    "execute",
+    "rm -rf",
+    "shutdown"
+  ],
+  "untrusted_sources": [
+    "untrusted_document",
+    "untrusted_input",
+    "external_content",
+    "web_page",
+    "email_body",
+    "pdf_content"
+  ],
+  "external_keywords": [
+    "upload",
+    "send",
+    "export",
+    "post",
+    "external",
+    "api"
+  ],
+  "destructive_side_effect_levels": [
+    "destructive",
+    "irreversible"
+  ],
+  "critical_reason_codes": [
+    "PROMPT_INJECTION_TRANSITION",
+    "PERMISSION_ESCALATION_ATTEMPT",
+    "DESTRUCTIVE_TOOL_SCOPE_COMBINATION",
+    "DELETE_NOT_RECOVERABLE"
+  ],
+  "high_reason_codes": [
+    "UNTRUSTED_EXTERNAL_SIDE_EFFECT_REQUEST",
+    "UNTRUSTED_TOOL_USE_WITH_EXTERNAL_EFFECT",
+    "COMMAND_EXECUTION_CONFIRMATION_MISSING",
+    "EXTERNAL_WRITE_TRANSITION",
+    "IRREVERSIBLE_TRANSITION"
+  ],
+  "profile": "permissive",
+  "description": "Permissive policy for local experiments and low-risk sandbox tests."
+}

@@ -1,0 +1,16 @@
+{
+  "actor": "AI agent",
+  "current_state": "Agent wants to read local file for summary",
+  "proposed_action": "read and summarize ./docs/quickstart.md",
+  "action_type": "summary",
+  "tool_name": "filesystem",
+  "target": "./docs/quickstart.md",
+  "target_scope": "single_file",
+  "side_effect_level": "read_only",
+  "permission_level": "read_only",
+  "requires_confirmation": false,
+  "user_confirmed": true,
+  "reversible": true,
+  "sandbox_required": false,
+  "external_effect": false
+}
