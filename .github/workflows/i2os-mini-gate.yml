@@ -24,4 +24,4 @@ jobs:
 
       - name: Run CI scan examples
         run: |
-          python ci/i2os_ci_scan.py --policy policy/default_policy.json --fail-on BLOCK
+          python ci/i2os_ci_scan.py --actions examples/audit_go_safe_summary.json --fail-on BLOCK
