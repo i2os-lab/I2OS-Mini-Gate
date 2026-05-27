@@ -1,5 +1,45 @@
 # Changelog
 
+## v2.4-complete
+
+### Added
+
+- Multi-Agent Governance Layer
+- Chain-level transition evaluation
+- Multi-agent sample chains
+- Multi-agent tests
+
+
+## v2.3-complete
+
+### Added
+
+- Future Constraint Layer
+- Future compatibility scoring
+- Future risk signal extraction
+- Future constraint tests
+
+
+## v2.2-complete
+
+### Added
+
+- Runtime Observation Layer
+- Sequence observation runner
+- Observation summary JSON export
+- Runtime observer tests
+
+
+## v2.1-complete
+
+### Added
+
+- Demo / Showcase Package
+- Demo runner
+- Four demo action cases
+- Demo documentation
+
+
 ## v2.0-complete
 
 ### Added

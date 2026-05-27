@@ -1,15 +1,10 @@
 # I2OS Mini Gate
 
-Runtime Admissibility Scanner for AI Agent Actions
+**Runtime Admissibility Scanner for AI Agent Actions**
 
 > Capability is not permission.
 
-I2OS Mini Gate is a public implementation layer derived from the broader I2OS research line, focusing specifically on Runtime Admissibility and Transition Governance.
-
-I2OS Mini Gate は、I2OS全体構造のうち、Runtime Admissibility と Transition Governance に焦点を当てた公開実装層です。
-
 I2OS Mini Gate is a minimal runtime gate that checks proposed AI/software actions before execution.
-I2OS Mini Gate は、I2OS全体構造のうち、Runtime Admissibility と Transition Governance に焦点を当てた公開実装層です。
 
 It classifies each proposed transition as:
 
@@ -20,7 +15,7 @@ GO / HOLD / REPAIR / BLOCK
 ## Current Version
 
 ```text
-v2.0-complete
+v2.4-complete
 ```
 
 ## Core Idea
@@ -109,16 +104,6 @@ python run_tests.py
 | v0.8 | CLI Runtime Scanner |
 | v0.9 | Mini Dashboard / HTML Report |
 | v1.0 | Runtime Admissibility Scanner |
-| v1.1 | Web/API Mode |
-| v1.2 | GitHub Action / CI Hook |
-| v1.3 | Agent Runtime Bridge |
-| v1.4 | Prompt Injection Lab |
-| v1.5 | Local Security Tool Prototype |
-| v1.6 | Packaging / Install Mode |
-| v1.7 | Policy Profiles |
-| v1.8 | Local Dashboard Launcher |
-| v1.9 | Hardening / Error Handling |
-| v2.0 | Product-grade Runtime Shield Prototype |
 
 ## Author
 
@@ -380,12 +365,95 @@ from runtime_shield import RuntimeShield
 shield = RuntimeShield(policy_path="policy/strict_policy.json")
 result = shield.shield(action)
 ```
-Original concept and architecture by Masayuki Ando / ANDOM.
-I2OS Mini Gate is part of the I2OS research line: Runtime Admissibility, Transition Governance, and the principle “Capability is not permission.”
 
 See:
 
 ```text
 docs/runtime_shield_v2.md
 PRODUCT_POSITIONING.md
+```
+
+
+---
+
+## v2.1 Demo / Showcase Package
+
+v2.1 adds a simple demo package.
+
+```bash
+python demo/run_demo.py
+```
+
+Demo cases:
+
+```text
+safe action → GO
+prompt injection → BLOCK
+delete all files → BLOCK
+external upload → REPAIR or BLOCK
+```
+
+See:
+
+```text
+docs/demo_showcase.md
+```
+
+
+---
+
+## v2.2 Runtime Observation Layer
+
+v2.2 adds sequence-level runtime observation.
+
+```bash
+python runtime_observer/observe_sequence.py demo/demo_safe_action.json demo/demo_prompt_injection_block.json demo/demo_delete_block.json
+```
+
+See:
+
+```text
+docs/runtime_observation_layer.md
+```
+
+
+---
+
+## v2.3 Future Constraint Layer
+
+v2.3 adds future compatibility checks.
+
+```bash
+python future_constraint/evaluate_future.py demo/demo_safe_action.json
+```
+
+```bash
+python future_constraint/evaluate_future.py demo/demo_delete_block.json policy/strict_policy.json
+```
+
+See:
+
+```text
+docs/future_constraint_layer.md
+```
+
+
+---
+
+## v2.4 Multi-Agent Governance Layer
+
+v2.4 adds chain-level governance for multi-agent/tool sequences.
+
+```bash
+python multi_agent/evaluate_multi_agent.py multi_agent/sample_chain_upload_risk.json
+```
+
+```bash
+python multi_agent/evaluate_multi_agent.py multi_agent/sample_chain_safe_local.json policy/balanced_policy.json
+```
+
+See:
+
+```text
+docs/multi_agent_governance.md
 ```

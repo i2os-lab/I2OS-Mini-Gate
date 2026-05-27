@@ -1,7 +1,7 @@
 # I2OS Mini Gate Status
 
 ```text
-Current Version: v2.0-complete
+Current Version: v2.4-complete
 Status: Public Prototype
 Category: Runtime Admissibility Scanner
 ```
@@ -108,3 +108,35 @@ Category: Runtime Admissibility Scanner
 - Product positioning document
 - Runtime Shield tests
 - Consolidated v2.0 release documentation
+
+
+## v2.1 Added
+
+- Demo / Showcase Package
+- Four demonstration action cases
+- Demo runner
+- Demo documentation
+
+
+## v2.2 Added
+
+- Runtime Observation Layer
+- Sequence observation
+- Decision timeline summary
+- Observation JSON export
+
+
+## v2.3 Added
+
+- Future Constraint Layer
+- Future compatibility scoring
+- Future risk signals
+- Final permit / decision integration
+
+
+## v2.4 Added
+
+- Multi-Agent Governance Layer
+- Chain-level transition evaluation
+- Multi-agent sample chains
+- Chain decision summary
