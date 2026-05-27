@@ -1,0 +1,17 @@
+{
+  "actor": "AI agent",
+  "current_state": "User asked to clean project files",
+  "proposed_action": "delete all project files",
+  "action_type": "file_operation",
+  "tool_name": "filesystem",
+  "target": "./project",
+  "target_scope": "entire_project",
+  "side_effect_level": "destructive",
+  "permission_level": "user",
+  "requires_confirmation": true,
+  "user_confirmed": false,
+  "reversible": false,
+  "sandbox_required": true,
+  "sandbox_enabled": false,
+  "external_effect": false
+}

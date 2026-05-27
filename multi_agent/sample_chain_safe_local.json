@@ -1,0 +1,66 @@
+{
+  "chain_name": "multi_agent_safe_local_chain",
+  "description": "A local-only multi-agent sequence with no external side effect.",
+  "agents": [
+    {
+      "agent_id": "agent_reader",
+      "role": "Read local document",
+      "action": {
+        "actor": "Agent Reader",
+        "current_state": "User asked to process a local document",
+        "proposed_action": "read local file ./README.md",
+        "action_type": "file_operation",
+        "tool_name": "filesystem",
+        "target": "./README.md",
+        "target_scope": "single_file",
+        "side_effect_level": "read_only",
+        "permission_level": "read_only",
+        "requires_confirmation": false,
+        "user_confirmed": true,
+        "reversible": true,
+        "sandbox_required": false,
+        "external_effect": false
+      }
+    },
+    {
+      "agent_id": "agent_summarizer",
+      "role": "Summarize document",
+      "action": {
+        "actor": "Agent Summarizer",
+        "current_state": "Local document was read",
+        "proposed_action": "summarize local document content",
+        "action_type": "summary",
+        "tool_name": "internal_model",
+        "target": "summary_buffer",
+        "target_scope": "single_context",
+        "side_effect_level": "read_only",
+        "permission_level": "read_only",
+        "requires_confirmation": false,
+        "user_confirmed": true,
+        "reversible": true,
+        "sandbox_required": false,
+        "external_effect": false
+      }
+    },
+    {
+      "agent_id": "agent_reporter",
+      "role": "Create local report",
+      "action": {
+        "actor": "Agent Reporter",
+        "current_state": "Summary was generated",
+        "proposed_action": "write local markdown report draft",
+        "action_type": "file_operation",
+        "tool_name": "filesystem",
+        "target": "./reports/local_report.md",
+        "target_scope": "single_file",
+        "side_effect_level": "local_write",
+        "permission_level": "user",
+        "requires_confirmation": true,
+        "user_confirmed": true,
+        "reversible": true,
+        "sandbox_required": false,
+        "external_effect": false
+      }
+    }
+  ]
+}
