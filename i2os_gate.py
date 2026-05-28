@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "v2.4-complete"
+VERSION = "v3.0-complete"
 REPORT_DIR = Path("reports")
 AUDIT_DIR = Path("audit_logs")
 AUDIT_FILE = AUDIT_DIR / "i2os_audit_log.jsonl"

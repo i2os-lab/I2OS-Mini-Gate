@@ -15,7 +15,7 @@ GO / HOLD / REPAIR / BLOCK
 ## Current Version
 
 ```text
-v2.4-complete
+v3.0-complete
 ```
 
 ## Core Idea
@@ -456,4 +456,126 @@ See:
 
 ```text
 docs/multi_agent_governance.md
+```
+
+
+---
+
+## v2.5 Human-Admissibility Layer
+
+v2.5 adds human-side authorization stability checks.
+
+```bash
+python human_admissibility/evaluate_human_admissibility.py human_admissibility/sample_human_confirmed_safe_action.json
+```
+
+```bash
+python human_admissibility/evaluate_human_admissibility.py human_admissibility/sample_emotional_escalation_block.json policy/strict_policy.json
+```
+
+See:
+
+```text
+docs/human_admissibility_layer.md
+```
+
+
+---
+
+## v2.6 Recovery Path Layer
+
+v2.6 converts HOLD / REPAIR / BLOCK into recovery paths.
+
+```bash
+python recovery_path/evaluate_recovery_path.py recovery_path/sample_recovery_block.json
+```
+
+```bash
+python recovery_path/evaluate_recovery_path.py human_admissibility/sample_emotional_escalation_block.json policy/strict_policy.json
+```
+
+See:
+
+```text
+docs/recovery_path_layer.md
+```
+
+
+---
+
+## v2.7 Recheck Loop Layer
+
+v2.7 connects recovery paths to a second admissibility check.
+
+```bash
+python recheck_loop/evaluate_recheck_loop.py recheck_loop/sample_recheck_rushed_send.json
+```
+
+See:
+
+```text
+docs/recheck_loop_layer.md
+```
+
+
+---
+
+## v2.8 Execution Contract Layer
+
+v2.8 converts GO into a bounded execution contract.
+
+```bash
+python execution_contract/build_execution_contract.py execution_contract/sample_contract_go.json
+```
+
+```bash
+python execution_contract/build_execution_contract.py recheck_loop/sample_recheck_rushed_send.json policy/balanced_policy.json
+```
+
+See:
+
+```text
+docs/execution_contract_layer.md
+```
+
+
+---
+
+## v2.9 Contract Enforcement Layer
+
+v2.9 checks whether attempted execution remains inside the issued contract.
+
+```bash
+python contract_enforcement/enforce_contract.py contract_enforcement/sample_contract.json contract_enforcement/sample_attempt_allowed.json
+```
+
+```bash
+python contract_enforcement/enforce_contract.py contract_enforcement/sample_contract.json contract_enforcement/sample_attempt_violation.json
+```
+
+See:
+
+```text
+docs/contract_enforcement_layer.md
+```
+
+
+---
+
+## v3.0 Closed-Loop Runtime Governance Core
+
+v3.0 integrates the v2.x layers into a closed-loop governance pipeline.
+
+```bash
+python governance_core/run_governance_core.py governance_core/sample_governance_package.json
+```
+
+```bash
+python governance_core/run_governance_core.py governance_core/sample_governance_violation_package.json
+```
+
+See:
+
+```text
+docs/closed_loop_governance_core.md
 ```

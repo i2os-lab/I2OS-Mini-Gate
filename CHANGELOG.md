@@ -1,5 +1,66 @@
 # Changelog
 
+## v3.0-complete
+
+### Added
+
+- Closed-Loop Runtime Governance Core
+- Integrated pipeline: Human-Admissibility, Recovery, Recheck, Execution Contract, Contract Enforcement
+- Governance trace output
+- Governance core tests
+
+
+## v2.9-complete
+
+### Added
+
+- Contract Enforcement Layer
+- Contract boundary checking
+- Violation detection
+- Contract enforcement tests
+
+
+## v2.8-complete
+
+### Added
+
+- Execution Contract Layer
+- Bounded execution contract for GO transitions
+- Recheck triggers
+- Human visibility and audit requirements
+- Execution contract tests
+
+
+## v2.7-complete
+
+### Added
+
+- Recheck Loop Layer
+- Recovery-to-recheck loop
+- Repaired transition evaluation
+- Recheck loop tests
+
+
+## v2.6-complete
+
+### Added
+
+- Recovery Path Layer
+- Recovery steps for HOLD / REPAIR / BLOCK
+- Recheck condition generation
+- Recovery path tests
+
+
+## v2.5-complete
+
+### Added
+
+- Human-Admissibility Layer
+- Human-side authorization stability checks
+- Emotional pressure, urgency, cooldown, and human-verifiability signals
+- Human-admissibility tests
+
+
 ## v2.4-complete
 
 ### Added

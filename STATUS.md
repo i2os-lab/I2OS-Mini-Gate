@@ -1,7 +1,7 @@
 # I2OS Mini Gate Status
 
 ```text
-Current Version: v2.4-complete
+Current Version: v3.0-complete
 Status: Public Prototype
 Category: Runtime Admissibility Scanner
 ```
@@ -140,3 +140,51 @@ Category: Runtime Admissibility Scanner
 - Chain-level transition evaluation
 - Multi-agent sample chains
 - Chain decision summary
+
+
+## v2.5 Added
+
+- Human-Admissibility Layer
+- Human-side authorization stability checks
+- Emotional pressure / urgency / cooldown signals
+- Human-AI coupled-state admissibility
+
+
+## v2.6 Added
+
+- Recovery Path Layer
+- HOLD / REPAIR / BLOCK recovery steps
+- Recheck conditions
+- Recovery-oriented runtime governance
+
+
+## v2.7 Added
+
+- Recheck Loop Layer
+- Initial check → recovery path → repaired check
+- Loop status
+- Recovery verification
+
+
+## v2.8 Added
+
+- Execution Contract Layer
+- Bounded permission contract
+- Allowed scope / prohibited actions
+- Recheck triggers and audit requirements
+
+
+## v2.9 Added
+
+- Contract Enforcement Layer
+- Contract boundary checking
+- Violation detection
+- Recheck trigger extraction
+
+
+## v3.0 Added
+
+- Closed-Loop Runtime Governance Core
+- Integrated v2.x pipeline
+- Governance trace
+- Final governance status
