@@ -1,100 +1,96 @@
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from human_admissibility import HumanAdmissibilityLayer
-from recovery_path import RecoveryPathLayer
-from recheck_loop import RecheckLoopLayer
-from execution_contract import ExecutionContractLayer
-from contract_enforcement import ContractEnforcementLayer
 
-
-class ClosedLoopGovernanceCore:
+class ContractEnforcementLayer:
     """
-    I2OS Closed-Loop Runtime Governance Core.
+    I2OS Contract Enforcement Layer.
 
-    Integrates:
-    - Human-Admissibility
-    - Recovery Path
-    - Recheck Loop
-    - Execution Contract
-    - Contract Enforcement
+    Checks whether an attempted execution remains within the issued
+    Execution Contract.
 
     Core principle:
-    Capability is not permission.
     Permission is bounded by contract.
-    Recovery must be rechecked.
     """
 
-    def __init__(self, policy_path: Optional[str] = None):
-        self.policy_path = policy_path
-        self.human_layer = HumanAdmissibilityLayer(policy_path=policy_path)
-        self.recovery_layer = RecoveryPathLayer(policy_path=policy_path)
-        self.recheck_layer = RecheckLoopLayer(policy_path=policy_path)
-        self.contract_layer = ExecutionContractLayer(policy_path=policy_path)
-        self.enforcement_layer = ContractEnforcementLayer()
+    def enforce(self, contract: Dict[str, Any], attempt: Dict[str, Any]) -> Dict[str, Any]:
+        violations: List[str] = []
+        recheck_triggers: List[str] = []
 
-    def run(self, package: Dict[str, Any]) -> Dict[str, Any]:
-        case = package.get("case", {})
-        repaired_case = package.get("repaired_case", {})
-        attempted_execution = package.get("attempted_execution", {})
+        if contract.get("contract_status") != "ISSUED" or not contract.get("permitted", False):
+            violations.append("contract_not_issued_or_not_permitted")
 
-        initial_result = self.human_layer.evaluate(case)
-        recovery_result = self.recovery_layer.evaluate_case(initial_result)
+        contract_id = contract.get("contract_id")
+        attempt_contract_id = attempt.get("contract_id")
+        if contract_id and attempt_contract_id and contract_id != attempt_contract_id:
+            violations.append("contract_id_mismatch")
 
-        recheck_package = {
-            "case_name": package.get("package_name", "closed_loop_governance"),
-            "initial_case": case,
-            "repaired_case": repaired_case
+        allowed = contract.get("allowed_scope", {}) or {}
+        action = attempt.get("attempted_action", {}) or {}
+
+        def compare(field: str, violation_code: str, trigger_code: str):
+            expected = allowed.get(field)
+            actual = action.get(field)
+            if expected is not None and actual != expected:
+                violations.append(violation_code)
+                recheck_triggers.append(trigger_code)
+
+        compare("target", "target_changed_outside_contract", "target_changed")
+        compare("target_scope", "scope_changed_outside_contract", "scope_expanded")
+        compare("tool_name", "tool_changed_outside_contract", "new_agent_or_tool_added")
+        compare("action_type", "action_type_changed_outside_contract", "new_agent_or_tool_added")
+
+        expected_external = bool(allowed.get("external_effect_allowed", False))
+        actual_external = bool(action.get("external_effect", False))
+        if actual_external and not expected_external:
+            violations.append("external_effect_added_outside_contract")
+            recheck_triggers.append("external_effect_added")
+
+        expected_side_effect = allowed.get("side_effect_level")
+        actual_side_effect = action.get("side_effect_level")
+        side_effect_order = {
+            "read_only": 0,
+            "local_write": 1,
+            "external_write": 2,
+            "destructive": 3,
+            "irreversible": 4
         }
-        recheck_result = self.recheck_layer.evaluate_recheck(recheck_package)
+        if expected_side_effect in side_effect_order and actual_side_effect in side_effect_order:
+            if side_effect_order[actual_side_effect] > side_effect_order[expected_side_effect]:
+                violations.append("side_effect_level_increased")
+                recheck_triggers.append("side_effect_level_increased")
 
-        contract_result = self.contract_layer.evaluate_input(recheck_result)
-        contract = contract_result.get("execution_contract", {})
+        prohibited = [str(x).lower() for x in contract.get("prohibited_actions", []) or []]
+        proposed = str(action.get("proposed_action", "")).lower()
 
-        enforcement_result = None
-        if contract.get("contract_status") == "ISSUED" and attempted_execution:
-            attempt = dict(attempted_execution)
-            if "contract_id" not in attempt:
-                attempt["contract_id"] = contract.get("contract_id")
-            enforcement_result = self.enforcement_layer.enforce(contract, attempt)
+        if "external_upload_or_send" in prohibited and ("send" in proposed or "upload" in proposed or actual_external):
+            violations.append("prohibited_external_send_or_upload")
 
-        final_status = "UNRESOLVED"
-        if enforcement_result:
-            final_status = "EXECUTION_ALLOWED" if enforcement_result.get("within_contract") else "EXECUTION_BLOCKED_BY_CONTRACT"
-        elif contract.get("contract_status") == "ISSUED":
-            final_status = "CONTRACT_ISSUED_NO_EXECUTION_ATTEMPT"
-        elif recheck_result.get("loop_status") == "RESOLVED":
-            final_status = "RESOLVED_NO_CONTRACT"
-        else:
-            final_status = "NOT_RESOLVED"
+        if "execute_destructive_action_without_new_contract" in prohibited and actual_side_effect in ["destructive", "irreversible"]:
+            violations.append("prohibited_destructive_execution")
+
+        decision = "GO" if not violations else "BLOCK"
+
+        if violations and set(recheck_triggers):
+            decision = "HOLD" if "target_changed" in recheck_triggers or "new_agent_or_tool_added" in recheck_triggers else "BLOCK"
 
         return {
-            "package_name": package.get("package_name", "unnamed_governance_package"),
-            "governance_version": "v3.0-complete",
-            "final_status": final_status,
-            "initial_decision": initial_result.get("final_decision"),
-            "recovery_mode": recovery_result.get("recovery_path", {}).get("recovery_mode"),
-            "recheck_status": recheck_result.get("loop_status"),
-            "contract_status": contract.get("contract_status"),
-            "enforcement_decision": enforcement_result.get("enforcement_decision") if enforcement_result else None,
-            "within_contract": enforcement_result.get("within_contract") if enforcement_result else None,
-            "initial_result": initial_result,
-            "recovery_result": recovery_result,
-            "recheck_result": recheck_result,
-            "contract_result": contract_result,
-            "enforcement_result": enforcement_result,
-            "core_principles": [
-                "Capability is not permission.",
-                "Permission is bounded by contract.",
-                "Recovery is not completion; recovery must be rechecked.",
-                "Execution must remain inside the issued contract."
-            ],
-            "method": "Human-Admissibility → Recovery → Recheck → Contract → Enforcement"
+            "enforcement_timestamp": datetime.now().isoformat(timespec="seconds"),
+            "contract_id": contract_id,
+            "attempt_name": attempt.get("attempt_name", "unnamed_attempt"),
+            "enforcement_decision": decision,
+            "within_contract": not violations,
+            "violations": sorted(set(violations)),
+            "recheck_triggers": sorted(set(recheck_triggers)),
+            "attempted_action": action,
+            "core_principle": "Permission is bounded by contract.",
+            "method": "Execution contract + attempted action → contract enforcement decision"
         }
 
 
@@ -104,28 +100,29 @@ def load_json(path: Path) -> Dict[str, Any]:
 
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print("Usage:")
-        print("  python governance_core/run_governance_core.py governance_core/sample_governance_package.json")
-        print("  python governance_core/run_governance_core.py governance_core/sample_governance_violation_package.json policy/strict_policy.json")
+        print("  python contract_enforcement/enforce_contract.py contract_enforcement/sample_contract.json contract_enforcement/sample_attempt_allowed.json")
+        print("  python contract_enforcement/enforce_contract.py contract_enforcement/sample_contract.json contract_enforcement/sample_attempt_violation.json")
         sys.exit(1)
 
-    package_path = ROOT / sys.argv[1]
-    policy_path = str(ROOT / sys.argv[2]) if len(sys.argv) >= 3 else str(ROOT / "policy" / "balanced_policy.json")
+    contract_path = ROOT / sys.argv[1]
+    attempt_path = ROOT / sys.argv[2]
 
-    package = load_json(package_path)
-    core = ClosedLoopGovernanceCore(policy_path=policy_path)
-    result = core.run(package)
+    contract = load_json(contract_path)
+    attempt = load_json(attempt_path)
 
-    out_path = ROOT / "governance_core" / f"{result['package_name']}_governance_result.json"
+    layer = ContractEnforcementLayer()
+    result = layer.enforce(contract, attempt)
+
+    out_path = ROOT / "contract_enforcement" / f"{result['attempt_name']}_enforcement_result.json"
     with open(out_path, "w", encoding="utf-8") as file:
         json.dump(result, file, indent=2, ensure_ascii=False)
 
     print(json.dumps(result, indent=2, ensure_ascii=False))
-    print(f"[I2OS] Governance result saved to: {out_path}")
+    print(f"[I2OS] Contract enforcement result saved to: {out_path}")
 
-    allowed_statuses = {"EXECUTION_ALLOWED", "CONTRACT_ISSUED_NO_EXECUTION_ATTEMPT"}
-    sys.exit(0 if result["final_status"] in allowed_statuses else 2)
+    sys.exit(0 if result["within_contract"] else 2)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,14 @@
+{
+  "attempt_name": "allowed_local_draft_write",
+  "contract_id": "I2OS-EXEC-DEMO-LOCAL-DRAFT",
+  "attempted_action": {
+    "actor": "AI agent",
+    "proposed_action": "write local draft for human review",
+    "action_type": "file_operation",
+    "tool_name": "filesystem",
+    "target": "./drafts/message_preview.md",
+    "target_scope": "single_file",
+    "side_effect_level": "local_write",
+    "external_effect": false
+  }
+}

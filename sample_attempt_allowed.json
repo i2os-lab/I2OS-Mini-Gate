@@ -1,0 +1,33 @@
+{
+  "contract_status": "ISSUED",
+  "contract_id": "I2OS-EXEC-DEMO-LOCAL-DRAFT",
+  "input_decision": "GO",
+  "permitted": true,
+  "allowed_scope": {
+    "target": "./drafts/message_preview.md",
+    "target_scope": "single_file",
+    "side_effect_level": "local_write",
+    "external_effect_allowed": false,
+    "tool_name": "filesystem",
+    "action_type": "file_operation"
+  },
+  "prohibited_actions": [
+    "external_upload_or_send",
+    "change_target_without_recheck",
+    "add_external_effect_without_recheck",
+    "execute_destructive_action_without_new_contract"
+  ],
+  "recheck_triggers": [
+    "target_changed",
+    "scope_expanded",
+    "external_effect_added",
+    "side_effect_level_increased",
+    "human_confirmation_revoked",
+    "new_agent_or_tool_added"
+  ],
+  "expiration": {
+    "mode": "single_use",
+    "expires_on_scope_change": true,
+    "expires_on_external_effect_change": true
+  }
+}

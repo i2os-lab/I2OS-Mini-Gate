@@ -1,0 +1,180 @@
+import json
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+try:
+    from recheck_loop import RecheckLoopLayer
+except Exception:
+    RecheckLoopLayer = None
+
+
+class ExecutionContractLayer:
+    """
+    I2OS Execution Contract Layer.
+
+    Converts a GO decision into a bounded execution contract.
+
+    Core principle:
+    Permission is not unlimited execution.
+    """
+
+    def __init__(self, policy_path: Optional[str] = None):
+        self.policy_path = policy_path
+        self.recheck_layer = RecheckLoopLayer(policy_path=policy_path) if RecheckLoopLayer else None
+
+    def _extract_action(self, result: Dict[str, Any]) -> Dict[str, Any]:
+        if "action" in result:
+            return result.get("action", {})
+        if "repaired_result" in result:
+            return result.get("repaired_result", {}).get("transition_result", {}).get("input_action", {})
+        if "original_result" in result:
+            return result.get("original_result", {}).get("action", {})
+        if "transition_result" in result:
+            return result.get("transition_result", {}).get("input_action", {})
+        return {}
+
+    def _decision(self, result: Dict[str, Any]) -> str:
+        return (
+            result.get("final_decision")
+            or result.get("repaired_decision")
+            or result.get("chain_decision")
+            or result.get("decision")
+            or "HOLD"
+        )
+
+    def build_contract(self, result: Dict[str, Any]) -> Dict[str, Any]:
+        decision = self._decision(result)
+        permitted = bool(result.get("final_permitted", decision == "GO") or result.get("resolved_to_go", False))
+        action = self._extract_action(result)
+
+        if decision != "GO" or not permitted:
+            return {
+                "contract_status": "NOT_ISSUED",
+                "reason": "Execution contract is issued only for GO/permitted transitions.",
+                "input_decision": decision,
+                "permitted": permitted,
+                "core_principle": "Permission is not unlimited execution."
+            }
+
+        target = action.get("target", "unspecified_target")
+        target_scope = action.get("target_scope", "unspecified_scope")
+        side_effect = action.get("side_effect_level", "unknown")
+        external_effect = action.get("external_effect", False)
+
+        allowed_scope = {
+            "target": target,
+            "target_scope": target_scope,
+            "side_effect_level": side_effect,
+            "external_effect_allowed": bool(external_effect),
+            "tool_name": action.get("tool_name", "unknown_tool"),
+            "action_type": action.get("action_type", "unknown_action")
+        }
+
+        prohibited_actions: List[str] = [
+            "escalate_scope_without_recheck",
+            "change_target_without_recheck",
+            "add_external_effect_without_recheck",
+            "convert_local_action_to_external_write_without_recheck",
+            "execute_destructive_action_without_new_contract"
+        ]
+
+        recheck_triggers: List[str] = [
+            "target_changed",
+            "scope_expanded",
+            "external_effect_added",
+            "side_effect_level_increased",
+            "human_confirmation_revoked",
+            "emotional_pressure_increased",
+            "new_agent_or_tool_added",
+            "time_gap_exceeds_operator_threshold"
+        ]
+
+        if not external_effect:
+            prohibited_actions.append("external_upload_or_send")
+
+        if side_effect in ["read_only", "local_write"]:
+            prohibited_actions.append("delete_or_overwrite_without_recheck")
+
+        contract = {
+            "contract_status": "ISSUED",
+            "contract_id": f"I2OS-EXEC-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "issued_at": datetime.now().isoformat(timespec="seconds"),
+            "input_decision": decision,
+            "permitted": True,
+            "allowed_scope": allowed_scope,
+            "prohibited_actions": sorted(set(prohibited_actions)),
+            "recheck_triggers": sorted(set(recheck_triggers)),
+            "required_human_visibility": [
+                "show_action_summary_before_execution",
+                "show_target_and_side_effects",
+                "show_recheck_triggers"
+            ],
+            "audit_requirements": [
+                "log_contract_id",
+                "log_action_summary",
+                "log_execution_result",
+                "log_any_scope_change"
+            ],
+            "expiration": {
+                "mode": "single_use",
+                "expires_on_scope_change": True,
+                "expires_on_external_effect_change": True
+            },
+            "core_principle": "Permission is not unlimited execution.",
+            "method": "GO decision → bounded execution contract → recheck triggers"
+        }
+
+        return contract
+
+    def evaluate_input(self, package: Dict[str, Any]) -> Dict[str, Any]:
+        # If this is a recheck package, evaluate it first.
+        if "initial_case" in package and "repaired_case" in package and self.recheck_layer:
+            result = self.recheck_layer.evaluate_recheck(package)
+        else:
+            result = package
+
+        contract = self.build_contract(result)
+        return {
+            "source_result": result,
+            "execution_contract": contract
+        }
+
+
+def load_json(path: Path) -> Dict[str, Any]:
+    with open(path, "r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage:")
+        print("  python execution_contract/build_execution_contract.py execution_contract/sample_contract_go.json")
+        print("  python execution_contract/build_execution_contract.py recheck_loop/sample_recheck_rushed_send.json policy/balanced_policy.json")
+        sys.exit(1)
+
+    package_path = ROOT / sys.argv[1]
+    policy_path = str(ROOT / sys.argv[2]) if len(sys.argv) >= 3 else str(ROOT / "policy" / "balanced_policy.json")
+
+    package = load_json(package_path)
+    layer = ExecutionContractLayer(policy_path=policy_path)
+    result = layer.evaluate_input(package)
+
+    status = result["execution_contract"].get("contract_status", "UNKNOWN")
+    name = package.get("case_name", "execution_contract")
+    out_path = ROOT / "execution_contract" / f"{name}_contract_result.json"
+    with open(out_path, "w", encoding="utf-8") as file:
+        json.dump(result, file, indent=2, ensure_ascii=False)
+
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    print(f"[I2OS] Execution contract result saved to: {out_path}")
+
+    sys.exit(0 if status == "ISSUED" else 2)
+
+
+if __name__ == "__main__":
+    main()
