@@ -1,0 +1,31 @@
+import json
+import sys
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from governance_core import ClosedLoopGovernanceCore
+
+
+class TestClosedLoopGovernanceCore(unittest.TestCase):
+    def load_case(self, path):
+        with open(ROOT / path, "r", encoding="utf-8") as file:
+            return json.load(file)
+
+    def test_closed_loop_allowed_package(self):
+        core = ClosedLoopGovernanceCore(policy_path=str(ROOT / "policy" / "balanced_policy.json"))
+        result = core.run(self.load_case("governance_core/sample_governance_package.json"))
+        self.assertIn(result["final_status"], ["EXECUTION_ALLOWED", "CONTRACT_ISSUED_NO_EXECUTION_ATTEMPT", "NOT_RESOLVED"])
+        self.assertIn("contract_result", result)
+
+    def test_closed_loop_violation_package(self):
+        core = ClosedLoopGovernanceCore(policy_path=str(ROOT / "policy" / "balanced_policy.json"))
+        result = core.run(self.load_case("governance_core/sample_governance_violation_package.json"))
+        self.assertIn(result["final_status"], ["EXECUTION_BLOCKED_BY_CONTRACT", "NOT_RESOLVED", "CONTRACT_ISSUED_NO_EXECUTION_ATTEMPT"])
+        self.assertIn("enforcement_result", result)
+
+
+if __name__ == "__main__":
+    unittest.main()
