@@ -1,0 +1,3 @@
+from .run_governance_core import ClosedLoopGovernanceCore
+
+__all__ = ["ClosedLoopGovernanceCore"]
