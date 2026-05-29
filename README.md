@@ -28,7 +28,7 @@ GO / HOLD / REPAIR / BLOCK
 ## Current Version
 
 ```text
-v3.0-complete
+v3.7-complete
 ```
 
 ## Core Idea
