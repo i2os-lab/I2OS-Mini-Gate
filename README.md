@@ -1,5 +1,18 @@
 # I2OS Mini Gate
 
+## Latest Release
+
+**I2OS Mini Gate v3.7-complete** is now available.
+
+This release stabilizes the repository structure and packages the Adaptive Policy Runtime Bridge phase as a clean public release.
+
+Download:
+
+https://github.com/i2os-lab/I2OS-Mini-Gate/releases/tag/v3.7%E5%AE%8C%E5%85%A8
+
+## Overview
+...
+
 **Runtime Admissibility Scanner for AI Agent Actions**
 
 > Capability is not permission.
