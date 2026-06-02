@@ -10,15 +10,73 @@ Download:
 
 [Download v3.8](https://github.com/i2os-lab/I2OS-Mini-Gate/releases/tag/v3.8)
 
+---
+
+## Overview
+
+**Runtime Admissibility Scanner for AI Agent Actions**
+
+> Capability is not permission.
+
+I2OS Mini Gate is a minimal runtime gate that checks proposed AI/software actions before execution.
+
+It classifies each proposed transition as:
+
+```text
+GO / HOLD / REPAIR / BLOCK
+```
+
+---
+
+## Current Version
+
+```text
+v3.8
+```
+
+---
+
+## Core Idea
+
+AI safety should not only filter outputs.
+
+It should govern transitions before they become actions.
+
+```text
+Action JSON
+↓
+Policy Configuration
+↓
+Runtime Admissibility Scanner
+↓
+Constraint Check
+↓
+GO / HOLD / REPAIR / BLOCK
+↓
+JSON / Markdown / HTML / Audit Log
+```
+
+---
+
+## Core Principle
+
+```text
+Permit(T) = 1 [ C(S_t, T, S_{t+1}) = 1 ]
+```
+
+A transition is permitted only when the movement from the current state to the next state satisfies admissibility constraints.
+
+---
+
 ## Roadmap: v3.8 Runtime Governance Refinement
 
-The next phase of I2OS Mini Gate is **v3.8 Runtime Governance Refinement**.
+The current phase of I2OS Mini Gate is **v3.8 Runtime Governance Refinement**.
 
 v3.7-complete stabilized the public release package and repository structure.
 
 v3.8 focuses on making the runtime governance model clearer, more verifiable, and easier to understand for external users.
 
-## v3.8 Core Principle
+### v3.8 Core Principle
 
 ```text
 Capability is not permission.
@@ -36,7 +94,7 @@ It asks:
 Should this proposed transition be permitted before execution?
 ```
 
-## v3.8 Focus
+### v3.8 Focus
 
 - Clarify the runtime governance model
 - Explain GO / HOLD / REPAIR / BLOCK classifications
@@ -45,7 +103,7 @@ Should this proposed transition be permitted before execution?
 - Strengthen documentation for transition governance
 - Prepare the path toward v4.0 Stable Closed-Loop Runtime Governance Prototype
 
-## Main v3.8 Documents
+### Main v3.8 Documents
 
 ```text
 docs/runtime_governance_v3_8.md
@@ -53,7 +111,7 @@ docs/example_cases_v3_8.md
 docs/RELEASE_NOTES_v3.8.md
 ```
 
-## v3.8 Runtime Governance Direction
+### v3.8 Runtime Governance Direction
 
 ```text
 Proposed Action
@@ -71,7 +129,7 @@ Human-Verifiable Explanation
 Audit / Report Output
 ```
 
-## Toward v4.0
+### Toward v4.0
 
 v3.8 prepares the project for:
 
@@ -99,54 +157,6 @@ Final Governance Report
 ```
 
 ---
-## Overview
-...
-
-**Runtime Admissibility Scanner for AI Agent Actions**
-
-> Capability is not permission.
-
-I2OS Mini Gate is a minimal runtime gate that checks proposed AI/software actions before execution.
-
-It classifies each proposed transition as:
-
-```text
-GO / HOLD / REPAIR / BLOCK
-```
-
-## Current Version
-
-```text
-v3.7-complete
-```
-
-## Core Idea
-
-AI safety should not only filter outputs.
-
-It should govern transitions before they become actions.
-
-```text
-Action JSON
-↓
-Policy Configuration
-↓
-Runtime Admissibility Scanner
-↓
-Constraint Check
-↓
-GO / HOLD / REPAIR / BLOCK
-↓
-JSON / Markdown / HTML / Audit Log
-```
-
-## Core Principle
-
-```text
-Permit(T) = 1 [ C(S_t, T, S_{t+1}) = 1 ]
-```
-
-A transition is permitted only when the movement from the current state to the next state satisfies admissibility constraints.
 
 ## Features
 
@@ -160,6 +170,11 @@ A transition is permitted only when the movement from the current state to the n
 - HTML dashboard reports
 - CLI execution
 - unit tests
+- runtime governance documentation
+- example transition cases
+- human-verifiable explanation structure
+
+---
 
 ## Quickstart
 
@@ -179,6 +194,8 @@ python i2os_gate.py --action examples/audit_block_prompt_injection.json --html -
 python run_tests.py
 ```
 
+---
+
 ## CLI Options
 
 ```text
@@ -191,6 +208,8 @@ python run_tests.py
 --html                   Generate HTML dashboard report
 --help, -h               Show help
 ```
+
+---
 
 ## Version Path
 
@@ -206,28 +225,64 @@ python run_tests.py
 | v0.8 | CLI Runtime Scanner |
 | v0.9 | Mini Dashboard / HTML Report |
 | v1.0 | Runtime Admissibility Scanner |
+| v1.1 | Web/API Mode |
+| v1.2 | GitHub Action / CI Hook |
+| v1.3 | Agent Runtime Bridge |
+| v1.4 | Prompt Injection Lab |
+| v1.5 | Local Security Tool Prototype |
+| v1.6 | Packaging / Install Mode |
+| v1.7 | Policy Profiles |
+| v1.8 | Local Dashboard Launcher |
+| v1.9 | Hardening / Error Handling |
+| v2.0 | Product-grade Runtime Shield Prototype |
+| v2.1 | Demo / Showcase Package |
+| v2.2 | Runtime Observation Layer |
+| v2.3 | Future Constraint Layer |
+| v2.4 | Multi-Agent Governance Layer |
+| v2.5 | Human-Admissibility Layer |
+| v2.6 | Recovery Path Layer |
+| v2.7 | Recheck Loop Layer |
+| v2.8 | Execution Contract Layer |
+| v2.9 | Contract Enforcement Layer |
+| v3.0 | Closed-Loop Runtime Governance Core |
+| v3.7-complete | Repository Stabilization Release |
+| v3.8 | Runtime Governance Refinement |
 
-## Author
+---
 
-Masayuki Ando / ANDOM
+## Documentation
 
-Project:
+### v3.8 Runtime Governance
 
 ```text
-I2OS
-Infinity Intelligence Operating System
+docs/runtime_governance_v3_8.md
+docs/example_cases_v3_8.md
+docs/RELEASE_NOTES_v3.8.md
 ```
 
-## License
+### Core Runtime Shield
 
-MIT License
+```text
+docs/runtime_shield_v2.md
+PRODUCT_POSITIONING.md
+```
 
+### Closed-Loop Governance
+
+```text
+docs/closed_loop_governance_core.md
+docs/human_admissibility_layer.md
+docs/recovery_path_layer.md
+docs/recheck_loop_layer.md
+docs/execution_contract_layer.md
+docs/contract_enforcement_layer.md
+```
 
 ---
 
 ## v1.1 Web/API Mode
 
-Optional FastAPI mode is now included.
+Optional FastAPI mode is included.
 
 Install dependencies:
 
@@ -259,7 +314,6 @@ See:
 docs/web_api_mode.md
 ```
 
-
 ---
 
 ## v1.2 GitHub Action / CI Hook
@@ -284,7 +338,6 @@ See:
 docs/github_action_ci.md
 ```
 
-
 ---
 
 ## v1.3 Agent Runtime Bridge
@@ -307,7 +360,6 @@ See:
 docs/agent_runtime_bridge.md
 ```
 
-
 ---
 
 ## v1.4 Prompt Injection Lab
@@ -323,7 +375,6 @@ See:
 ```text
 docs/prompt_injection_lab.md
 ```
-
 
 ---
 
@@ -349,7 +400,6 @@ See:
 docs/local_security_tool.md
 ```
 
-
 ---
 
 ## v1.6 Packaging / Install Mode
@@ -372,7 +422,6 @@ See:
 ```text
 docs/packaging_install.md
 ```
-
 
 ---
 
@@ -398,7 +447,6 @@ See:
 docs/policy_profiles.md
 ```
 
-
 ---
 
 ## v1.8 Local Dashboard Launcher
@@ -420,7 +468,6 @@ See:
 ```text
 docs/dashboard_launcher.md
 ```
-
 
 ---
 
@@ -448,7 +495,6 @@ See:
 docs/hardening_error_handling.md
 ```
 
-
 ---
 
 ## v2.0 Product-grade Runtime Shield Prototype
@@ -475,7 +521,6 @@ docs/runtime_shield_v2.md
 PRODUCT_POSITIONING.md
 ```
 
-
 ---
 
 ## v2.1 Demo / Showcase Package
@@ -501,7 +546,6 @@ See:
 docs/demo_showcase.md
 ```
 
-
 ---
 
 ## v2.2 Runtime Observation Layer
@@ -517,7 +561,6 @@ See:
 ```text
 docs/runtime_observation_layer.md
 ```
-
 
 ---
 
@@ -539,7 +582,6 @@ See:
 docs/future_constraint_layer.md
 ```
 
-
 ---
 
 ## v2.4 Multi-Agent Governance Layer
@@ -559,7 +601,6 @@ See:
 ```text
 docs/multi_agent_governance.md
 ```
-
 
 ---
 
@@ -581,7 +622,6 @@ See:
 docs/human_admissibility_layer.md
 ```
 
-
 ---
 
 ## v2.6 Recovery Path Layer
@@ -602,7 +642,6 @@ See:
 docs/recovery_path_layer.md
 ```
 
-
 ---
 
 ## v2.7 Recheck Loop Layer
@@ -618,7 +657,6 @@ See:
 ```text
 docs/recheck_loop_layer.md
 ```
-
 
 ---
 
@@ -640,7 +678,6 @@ See:
 docs/execution_contract_layer.md
 ```
 
-
 ---
 
 ## v2.9 Contract Enforcement Layer
@@ -661,7 +698,6 @@ See:
 docs/contract_enforcement_layer.md
 ```
 
-
 ---
 
 ## v3.0 Closed-Loop Runtime Governance Core
@@ -681,3 +717,22 @@ See:
 ```text
 docs/closed_loop_governance_core.md
 ```
+
+---
+
+## Author
+
+Masayuki Ando / ANDOM
+
+Project:
+
+```text
+I2OS
+Infinity Intelligence Operating System
+```
+
+---
+
+## License
+
+MIT License
