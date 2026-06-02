@@ -8,7 +8,7 @@ This release stabilizes the repository structure and packages the Adaptive Polic
 
 Download:
 
-(https://github.com/i2os-lab/I2OS-Mini-Gate/releases/tag/v3.7-complete)
+[Download v3.7-complete](https://github.com/i2os-lab/I2OS-Mini-Gate/releases/tag/v3.7-complete)
 
 ## Roadmap: v3.8 Runtime Governance Refinement
 
