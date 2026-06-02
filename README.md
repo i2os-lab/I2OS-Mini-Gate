@@ -10,6 +10,95 @@ Download:
 
 (https://github.com/i2os-lab/I2OS-Mini-Gate/releases/tag/v3.7-complete)
 
+## Roadmap: v3.8 Runtime Governance Refinement
+
+The next phase of I2OS Mini Gate is **v3.8 Runtime Governance Refinement**.
+
+v3.7-complete stabilized the public release package and repository structure.
+
+v3.8 focuses on making the runtime governance model clearer, more verifiable, and easier to understand for external users.
+
+## v3.8 Core Principle
+
+```text
+Capability is not permission.
+```
+
+I2OS Mini Gate does not only ask:
+
+```text
+Can the AI or software perform this action?
+```
+
+It asks:
+
+```text
+Should this proposed transition be permitted before execution?
+```
+
+## v3.8 Focus
+
+- Clarify the runtime governance model
+- Explain GO / HOLD / REPAIR / BLOCK classifications
+- Add concrete example cases
+- Improve human-verifiable explanations
+- Strengthen documentation for transition governance
+- Prepare the path toward v4.0 Stable Closed-Loop Runtime Governance Prototype
+
+## Main v3.8 Documents
+
+```text
+docs/runtime_governance_v3_8.md
+docs/example_cases_v3_8.md
+docs/RELEASE_NOTES_v3.8.md
+```
+
+## v3.8 Runtime Governance Direction
+
+```text
+Proposed Action
+↓
+State Extraction
+↓
+Admissibility Check
+↓
+Recovery / Confirmation Check
+↓
+Runtime Classification
+↓
+Human-Verifiable Explanation
+↓
+Audit / Report Output
+```
+
+## Toward v4.0
+
+v3.8 prepares the project for:
+
+```text
+I2OS Mini Gate v4.0
+Stable Closed-Loop Runtime Governance Prototype
+```
+
+Expected v4.0 direction:
+
+```text
+Proposed Action
+↓
+Human-Admissibility
+↓
+Recovery Path
+↓
+Recheck Loop
+↓
+Execution Contract
+↓
+Contract Enforcement
+↓
+Final Governance Report
+```
+
+---
 ## Overview
 ...
 
