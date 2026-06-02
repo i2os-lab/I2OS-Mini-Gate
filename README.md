@@ -2,13 +2,13 @@
 
 ## Latest Release
 
-**I2OS Mini Gate v3.7-complete** is now available.
+**I2OS Mini Gate v3.8** is now available.
 
-This release stabilizes the repository structure and packages the Adaptive Policy Runtime Bridge phase as a clean public release.
+This release refines the runtime governance layer and clarifies how proposed AI/software actions are checked as state transitions before execution.
 
 Download:
 
-[Download v3.7-complete](https://github.com/i2os-lab/I2OS-Mini-Gate/releases/tag/v3.7-complete)
+[Download v3.8](https://github.com/i2os-lab/I2OS-Mini-Gate/releases/tag/v3.8)
 
 ## Roadmap: v3.8 Runtime Governance Refinement
 
