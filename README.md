@@ -2,6 +2,205 @@
 
 ## Latest Release
 
+---
+
+## Formal Model Paper
+
+The formal model paper for **I2OS Mini Gate v0.1 to v4.1** is now available.
+
+Title:
+
+```text
+I2OS Mini Gate:
+A Formal Model of Runtime Transition Governance
+with Diagrams and Tables
+```
+
+Version range:
+
+```text
+v0.1 to v4.1 design stage
+```
+
+Author:
+
+```text
+Masayuki Ando / ANDOM
+```
+
+Core principle:
+
+```text
+Capability is not permission.
+```
+
+This paper formalizes I2OS Mini Gate as a compact runtime governance model that shifts AI safety from output filtering to transition governance.
+
+It covers:
+
+- GO / HOLD / REPAIR / BLOCK classification
+- admissibility constraints
+- runtime governance refinement
+- bounded permission
+- execution contracts
+- contract enforcement
+- contract violation response
+- post-violation reports
+- human-verifiable governance records
+
+PDF:
+
+[Download the formal model paper](paper/I2OS_Mini_Gate_Formal_Model_v0_1_to_v4_1_figures_polished.pdf)
+
+LaTeX source:
+
+[View LaTeX source](paper/I2OS_Mini_Gate_Formal_Model_v0_1_to_v4_1_figures_polished.tex)
+
+---
+
+## Position of Mini Gate
+
+I2OS Mini Gate is not the full I2OS architecture.
+
+It is a small-scale runtime governance prototype designed to test one core question:
+
+```text
+Should this proposed transition be permitted before execution?
+```
+
+Mini Gate does not merely ask:
+
+```text
+Can the AI or software perform this action?
+```
+
+It asks whether the proposed action is:
+
+- admissible
+- bounded
+- recoverable
+- synchronized with user intent
+- human-verifiable
+- safe to execute within a defined contract
+
+In this sense, Mini Gate is the small gate.
+
+The full I2OS architecture is the broader operating field behind it.
+
+---
+
+## Planned Direction Beyond v4.1
+
+The current public formal model reaches the **v4.1 design stage**.
+
+v4.1 focuses on:
+
+```text
+Contract Violation Response Layer
+```
+
+At this stage, I2OS Mini Gate defines how a system should respond when attempted execution violates an issued execution contract.
+
+The response flow is:
+
+```text
+Attempted Execution
+↓
+Contract Enforcement
+↓
+PASS / VIOLATION
+↓
+If VIOLATION:
+    Violation Classification
+    ↓
+    Severity Assessment
+    ↓
+    Response Level Selection
+    ↓
+    Containment
+    ↓
+    Repair / Rollback / Escalation
+    ↓
+    Post-Violation Report
+```
+
+The planned direction is to continue developing Mini Gate toward a broader runtime governance structure.
+
+Possible future trajectory:
+
+```text
+v4.x
+Audit Integrity / Human Review / Rollback Verification
+
+v5.x
+Policy Intelligence Layer
+
+v6.x
+Multi-Agent Runtime Governance
+
+v7.x
+Memory Governance Layer
+
+v8.x
+Real-World Action Governance
+
+v9.x
+Pre-Execution Simulation Layer
+
+v10.x
+General Admissibility Runtime OS
+```
+
+This roadmap is not a claim of completion.
+
+It represents the planned structural direction of the Mini Gate line.
+
+---
+
+## Core Summary
+
+I2OS Mini Gate formalizes a shift from output filtering to runtime transition governance.
+
+The system does not merely ask whether an AI can act.
+
+It asks:
+
+```text
+Is the proposed transition admissible before execution?
+Is permission bounded during execution?
+How should governance respond after violation?
+```
+
+Therefore:
+
+```text
+AI Safety
+=
+Pre-Execution Governance
++
+Bounded Execution
++
+Post-Violation Response
+```
+
+In natural language:
+
+```text
+AI safety is not only output filtering.
+
+It is admissible transition governance before action,
+bounded permission during execution,
+and structured response after violation.
+```
+
+Final principle:
+
+```text
+Safe intelligence is not intelligence that never collapses.
+
+Safe intelligence is intelligence that can recursively re-synchronize.
+```
+---
 **I2OS Mini Gate v3.8** is now available.
 
 This release refines the runtime governance layer and clarifies how proposed AI/software actions are checked as state transitions before execution.
